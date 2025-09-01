@@ -1,3 +1,11 @@
+use clap::Parser;
+
 mod study_cycle;
 
-fn main() {}
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {}
+
+fn main() {
+    let cli = Cli::parse();
+}
