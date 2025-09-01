@@ -24,3 +24,30 @@ pub fn study_subject(name: String) {
         None => println!("subject '{}' not found.", name),
     }
 }
+
+pub fn view_study_cycle(all: bool) {
+    let db = read_json_database_file();
+
+    match all {
+        true => {
+            for subject in db.subjects {
+                println!(
+                    "{} - {}/{}h",
+                    subject.name, subject.studied_hours, subject.max_study_hours
+                )
+            }
+        }
+        false => {
+            for subject in db
+                .subjects
+                .iter()
+                .filter(|s| s.studied_hours < s.max_study_hours)
+            {
+                println!(
+                    "{} - {}/{}h",
+                    subject.name, subject.studied_hours, subject.max_study_hours
+                )
+            }
+        }
+    }
+}

@@ -3,6 +3,13 @@ use clap::{Args, Subcommand};
 #[derive(Subcommand)]
 pub enum Commands {
     Study(SutdyArgs),
+    View(ViewArgs),
+}
+
+#[derive(Args)]
+pub struct ViewArgs {
+    #[arg(short, long)]
+    pub all: bool,
 }
 
 #[derive(Args)]
