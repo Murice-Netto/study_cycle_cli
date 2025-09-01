@@ -21,5 +21,6 @@ fn main() {
         Commands::Study(args) => handlers::study_subject(args.name.clone()),
         Commands::View(args) => handlers::view_study_cycle(args.all),
         Commands::Reset => handlers::reset_cycle(),
+        Commands::SeedDatabase(args) => handlers::seed_database(args.path.clone()),
     }
 }

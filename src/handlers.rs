@@ -1,5 +1,7 @@
+use std::fs;
+
 use crate::model::{read_json_database_file, udpate_json_database};
-use crate::study_cycle::Subject;
+use crate::study_cycle::{StudyCycle, Subject};
 
 pub fn study_subject(name: String) {
     let mut db = read_json_database_file();
@@ -80,5 +82,11 @@ pub fn reset_cycle() {
         subject.studied_hours = 0
     }
 
+    udpate_json_database(db);
+}
+
+pub fn seed_database(path: String) {
+    let content = fs::read_to_string(path).expect("failed to get file data to seed database");
+    let db: StudyCycle = serde_json::from_str(&content).expect("failed to parse seed content");
     udpate_json_database(db);
 }
