@@ -1,5 +1,6 @@
 use clap::Parser;
 
+mod model;
 mod study_cycle;
 
 #[derive(Parser)]
