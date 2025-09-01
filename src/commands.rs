@@ -4,6 +4,7 @@ use clap::{Args, Subcommand};
 pub enum Commands {
     Study(SutdyArgs),
     View(ViewArgs),
+    Reset,
 }
 
 #[derive(Args)]

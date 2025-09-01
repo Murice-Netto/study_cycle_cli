@@ -20,5 +20,6 @@ fn main() {
     match &cli.command {
         Commands::Study(args) => handlers::study_subject(args.name.clone()),
         Commands::View(args) => handlers::view_study_cycle(args.all),
+        Commands::Reset => handlers::reset_cycle(),
     }
 }
