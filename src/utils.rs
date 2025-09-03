@@ -1,3 +1,5 @@
+use crate::study_cycle::Subject;
+
 pub fn get_biggest_string_len(strings: Vec<String>) -> usize {
     if strings.is_empty() {
         return 0;
@@ -5,4 +7,40 @@ pub fn get_biggest_string_len(strings: Vec<String>) -> usize {
     let mut temp_vec: Vec<String> = strings.clone();
     temp_vec.sort_by(|a, b| b.len().cmp(&a.len()));
     temp_vec[0].len()
+}
+
+pub fn display_table(subjects: Vec<Subject>) {
+    let subject_names: Vec<String> = subjects.iter().map(|s| s.name.clone()).collect();
+    let headers: Vec<String> = vec![
+        "NAME".to_owned(),
+        "STUDIED HOURS".to_owned(),
+        "MAX STUDY HOURS".to_owned(),
+    ];
+    let biggest_cell = get_biggest_string_len(subject_names);
+    let biggest_header = get_biggest_string_len(headers);
+    if biggest_cell > biggest_header {
+        println!(
+            "{0: <biggest_cell$} | {1: <biggest_cell$} | {2: <biggest_cell$}",
+            "NAME", "STUDIED HOURS", "MAX STUDY HOURS"
+        );
+        for subject in subjects {
+            println!(
+                "{0: <biggest_cell$} | {1: <biggest_cell$} | {2: <biggest_cell$}",
+                subject.name, subject.studied_hours, subject.max_study_hours
+            );
+        }
+    } else {
+        println!(
+            "{0: <biggest_header$} | {1: <biggest_header$} | {2: <biggest_header$}",
+            "NAME", "STUDIED HOURS", "MAX STUDY HOURS"
+        );
+        for subject in subjects {
+            println!(
+                "{0: <biggest_header$} | {1: <biggest_header$} | {2: <biggest_header$}",
+                subject.name,
+                format!("{}h", subject.studied_hours),
+                format!("{}h", subject.max_study_hours),
+            );
+        }
+    }
 }
