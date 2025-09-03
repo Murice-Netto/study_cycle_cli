@@ -38,8 +38,8 @@ pub fn view_study_cycle(all: bool) {
     }
 
     match all {
-        true => utils::display_table(db.subjects),
-        false => utils::display_table(
+        true => utils::display_table_with_progress_bar(db.subjects),
+        false => utils::display_table_with_progress_bar(
             db.subjects
                 .iter()
                 .map(|s| s.clone())

@@ -45,6 +45,50 @@ pub fn display_table(subjects: Vec<Subject>) {
     }
 }
 
+pub fn display_table_with_progress_bar(subjects: Vec<Subject>) {
+    let subject_names: Vec<String> = subjects.iter().map(|s| s.name.clone()).collect();
+    let headers: Vec<String> = vec![
+        "NAME".to_owned(),
+        "PROGRESS BAR".to_owned(),
+        "HOURS".to_owned(),
+    ];
+    let biggest_cell = get_biggest_string_len(subject_names);
+    let biggest_header = get_biggest_string_len(headers);
+    if biggest_cell > biggest_header {
+        println!(
+            "{0: <biggest_cell$} | {1: <biggest_cell$} | {2: <biggest_cell$}",
+            "NAME", "PROGRESS BAR", "HOURS"
+        );
+        for subject in subjects {
+            println!(
+                "{0: <biggest_cell$} | {1: <biggest_cell$} | {2: <biggest_cell$}",
+                subject.name,
+                get_study_hours_progress_bar(
+                    subject.studied_hours.into(),
+                    subject.max_study_hours.into()
+                ),
+                format!("{}/{}h", subject.studied_hours, subject.max_study_hours)
+            );
+        }
+    } else {
+        println!(
+            "{0: <biggest_header$} | {1: <biggest_header$} | {2: <biggest_header$}",
+            "NAME", "PROGRESS BAR", "HOURS"
+        );
+        for subject in subjects {
+            println!(
+                "{0: <biggest_header$} | {1: <biggest_header$} | {2: <biggest_header$}",
+                subject.name,
+                get_study_hours_progress_bar(
+                    subject.studied_hours.into(),
+                    subject.max_study_hours.into()
+                ),
+                format!("{}/{}h", subject.studied_hours, subject.max_study_hours)
+            );
+        }
+    }
+}
+
 pub fn get_study_hours_progress_bar(studied_hours: i64, max_study_hours: i64) -> String {
     const EMPTY: char = '□';
     const FULL: char = '■';
