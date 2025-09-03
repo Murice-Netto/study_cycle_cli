@@ -63,13 +63,14 @@ pub fn display_table_with_progress_bar(subjects: &[Subject]) {
     }
 }
 
-pub fn get_study_hours_progress_bar(studied_hours: i64, max_study_hours: i64) -> String {
+pub fn get_study_hours_progress_bar(studied_hours: u8, max_study_hours: u8) -> String {
     const EMPTY: char = '□';
     const FULL: char = '■';
-    let remaning_hours = max_study_hours - studied_hours;
-    format!(
-        "{}{}",
-        FULL.to_string().repeat(studied_hours as usize),
-        EMPTY.to_string().repeat(remaning_hours as usize)
-    )
+    let full_part: String = std::iter::repeat(FULL)
+        .take(studied_hours as usize)
+        .collect();
+    let empty_parts: String = std::iter::repeat(EMPTY)
+        .take((max_study_hours - studied_hours) as usize)
+        .collect();
+    format!("{}{}", full_part, empty_parts)
 }
