@@ -31,6 +31,11 @@ pub fn study_subject(name: String) {
 pub fn view_study_cycle(all: bool) {
     let db = read_json_database_file();
 
+    if db.subjects.len() == 0 {
+        println!("no subjects found");
+        return;
+    }
+
     match all {
         true => {
             for subject in db.subjects {
