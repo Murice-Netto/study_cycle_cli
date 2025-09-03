@@ -44,3 +44,14 @@ pub fn display_table(subjects: Vec<Subject>) {
         }
     }
 }
+
+pub fn get_study_hours_progress_bar(studied_hours: i64, max_study_hours: i64) -> String {
+    const EMPTY: char = '□';
+    const FULL: char = '■';
+    let remaning_hours = max_study_hours - studied_hours;
+    format!(
+        "{}{}",
+        FULL.to_string().repeat(studied_hours as usize),
+        EMPTY.to_string().repeat(remaning_hours as usize)
+    )
+}
