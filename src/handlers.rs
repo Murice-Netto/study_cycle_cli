@@ -54,34 +54,36 @@ pub fn view_study_cycle(all: bool) -> Result<(), AppError> {
     Ok(())
 }
 
-pub fn reset_cycle() {
+pub fn reset_cycle() -> Result<(), AppError> {
     let mut db = read_json_database_file();
-    let mut still_need_study = Vec::<&Subject>::new();
 
-    for subject in db.subjects.iter() {
-        if subject.studied_hours != subject.max_study_hours {
-            still_need_study.push(subject);
-        }
-    }
+    let still_need_study: Vec<&Subject> = db
+        .subjects
+        .iter()
+        .filter(|s| s.studied_hours != s.max_study_hours)
+        .collect();
 
-    if still_need_study.iter().len() > 0 {
-        println!("failed to reset cycle. still need to study these subjects:");
-
+    if !still_need_study.is_empty() {
+        let mut error_message =
+            "Failed to reset cycle. The following subjects need to be finished:".to_string();
         for subject in still_need_study {
-            println!(
-                "{} - {}/{}h",
+            error_message.push_str(&format!(
+                "\n - {}({}/{}h)",
                 subject.name, subject.studied_hours, subject.max_study_hours
-            )
+            ));
         }
-
-        return;
+        return Err(AppError::Logic(error_message));
     }
 
     for subject in db.subjects.iter_mut() {
-        subject.studied_hours = 0
+        subject.studied_hours = 0;
     }
 
+    println!("Cycle reseted!");
+
     udpate_json_database(db);
+
+    Ok(())
 }
 
 pub fn seed_database(path: String) {
