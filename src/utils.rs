@@ -1,12 +1,7 @@
 use crate::study_cycle::Subject;
 
-pub fn get_biggest_string_len(strings: Vec<String>) -> usize {
-    if strings.is_empty() {
-        return 0;
-    }
-    let mut temp_vec: Vec<String> = strings.clone();
-    temp_vec.sort_by(|a, b| b.len().cmp(&a.len()));
-    temp_vec[0].len()
+pub fn get_biggest_string_len(strings: &[&str]) -> usize {
+    strings.iter().map(|s| s.len()).max().unwrap_or(0)
 }
 
 pub fn display_table(subjects: Vec<Subject>) {
