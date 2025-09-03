@@ -1,32 +1,34 @@
 use std::fs;
 
+use crate::error::AppError;
 use crate::model::{self, read_json_database_file, udpate_json_database};
 use crate::study_cycle::{StudyCycle, Subject};
 use crate::utils;
 
-pub fn study_subject(name: String) {
+pub fn study_subject(name: String) -> Result<(), AppError> {
     let mut db = read_json_database_file();
 
-    let subject = db.subjects.iter_mut().find(|s| s.name == name);
-
-    match subject {
-        Some(subject) => {
-            if subject.studied_hours >= subject.max_study_hours {
-                println!(
-                    "locked subject: {}/{}h studied already.",
-                    subject.studied_hours, subject.max_study_hours
-                );
-                return;
-            }
-
-            subject.studied_hours += 1;
-
-            udpate_json_database(db);
-
-            println!("studied!")
+    if let Some(subject) = db.subjects.iter_mut().find(|s| s.name == name) {
+        if subject.studied_hours >= subject.max_study_hours {
+            return Err(AppError::Logic(format!(
+                "Blocked subject: {}/{}h studied.",
+                subject.studied_hours, subject.max_study_hours
+            )));
         }
-        None => println!("subject '{}' not found.", name),
+
+        subject.studied_hours += 1;
+
+        udpate_json_database(db);
+
+        println!("Studied!");
+    } else {
+        return Err(AppError::Logic(format!(
+            "Subject '{}' was not found.",
+            name
+        )));
     }
+
+    Ok(())
 }
 
 pub fn view_study_cycle(all: bool) {
