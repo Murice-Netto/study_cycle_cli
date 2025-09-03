@@ -2,17 +2,29 @@ use serde_json;
 use std::fs;
 use std::io::Write;
 
+use crate::error::AppError;
 use crate::study_cycle::StudyCycle;
 
-pub fn read_json_database_file() -> StudyCycle {
-    create_database_file_if_not_exists();
+const DB_PATH: &str = "./database.json";
 
-    let content = fs::read_to_string("./database.json").expect("failed to read database file");
+pub fn read_json_database_file() -> Result<StudyCycle, AppError> {
+    match fs::read_to_string(DB_PATH) {
+        Ok(content) => {
+            let study_cycle: StudyCycle = serde_json::from_str(&content)?;
 
-    let study_cycle: StudyCycle =
-        serde_json::from_str(&content).expect("failed to parse database content");
+            Ok(study_cycle)
+        }
 
-    study_cycle
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+            let default_cycle = StudyCycle { subjects: vec![] };
+
+            udpate_json_database(&default_cycle)?;
+
+            Ok(default_cycle)
+        }
+
+        Err(e) => Err(e.into()),
+    }
 }
 
 pub fn udpate_json_database(data: StudyCycle) {
