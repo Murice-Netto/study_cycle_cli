@@ -2,6 +2,7 @@ use std::fs;
 
 use crate::model::{self, read_json_database_file, udpate_json_database};
 use crate::study_cycle::{StudyCycle, Subject};
+use crate::utils;
 
 pub fn study_subject(name: String) {
     let mut db = read_json_database_file();
@@ -37,26 +38,14 @@ pub fn view_study_cycle(all: bool) {
     }
 
     match all {
-        true => {
-            for subject in db.subjects {
-                println!(
-                    "{} - {}/{}h",
-                    subject.name, subject.studied_hours, subject.max_study_hours
-                )
-            }
-        }
-        false => {
-            for subject in db
-                .subjects
+        true => utils::display_table(db.subjects),
+        false => utils::display_table(
+            db.subjects
                 .iter()
+                .map(|s| s.clone())
                 .filter(|s| s.studied_hours < s.max_study_hours)
-            {
-                println!(
-                    "{} - {}/{}h",
-                    subject.name, subject.studied_hours, subject.max_study_hours
-                )
-            }
-        }
+                .collect(),
+        ),
     }
 }
 
