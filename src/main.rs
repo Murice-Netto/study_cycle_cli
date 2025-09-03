@@ -6,6 +6,7 @@ mod commands;
 mod handlers;
 mod model;
 mod study_cycle;
+mod utils;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
