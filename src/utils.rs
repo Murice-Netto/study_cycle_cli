@@ -25,44 +25,40 @@ pub fn display_table(subjects: &[Subject]) {
     }
 }
 
-pub fn display_table_with_progress_bar(subjects: Vec<Subject>) {
-    let subject_names: Vec<String> = subjects.iter().map(|s| s.name.clone()).collect();
-    let mut temp_subjects = subjects.clone();
-    let headers: Vec<String> = vec![
-        "NAME".to_owned(),
-        "PROGRESS BAR".to_owned(),
-        "HOURS".to_owned(),
-    ];
-    let biggest_cell = get_biggest_string_len(subject_names);
-    let biggest_header = get_biggest_string_len(headers);
-    temp_subjects.sort_by_key(|s| s.max_study_hours);
-    let biggest_progress_bar = temp_subjects
-        .last()
-        .expect("failed to get last subject")
-        .clone();
-    let mut possible_values_to_space_columns = vec![
-        biggest_cell,
-        biggest_header,
-        biggest_progress_bar.max_study_hours as usize,
-    ];
-    possible_values_to_space_columns.sort();
-    let space_between_columns = possible_values_to_space_columns
-        .last()
-        .expect("failed to get the last possible vlaes to space columns")
-        .clone();
+pub fn display_table_with_progress_bar(subjects: &[Subject]) {
+    if subjects.is_empty() {
+        println!("No subjects were found.");
+        return;
+    }
+    let name_width = subjects
+        .iter()
+        .map(|s| s.name.len())
+        .max()
+        .unwrap_or(0)
+        .max("NAME".len());
+    let progress_width = subjects
+        .iter()
+        .map(|s| s.max_study_hours as usize)
+        .max()
+        .unwrap_or(0)
+        .max("PROGRESS BAR".len());
+    let hours_width = subjects
+        .iter()
+        .map(|s| format!("{}/{}h", s.studied_hours, s.max_study_hours).len())
+        .max()
+        .unwrap_or(0)
+        .max("HOURS".len());
     println!(
-        "{0: <space_between_columns$} | {1: <space_between_columns$} | {2: <space_between_columns$}",
+        "{0: <name_width$} | {1: <progress_width$} | {2: <hours_width$}",
         "NAME", "PROGRESS BAR", "HOURS"
     );
     for subject in subjects {
+        let progress_bar =
+            get_study_hours_progress_bar(subject.studied_hours, subject.max_study_hours);
+        let hours_text = format!("{}/{}h", subject.studied_hours, subject.max_study_hours);
         println!(
-            "{0: <space_between_columns$} | {1: <space_between_columns$} | {2: <space_between_columns$}",
-            subject.name,
-            get_study_hours_progress_bar(
-                subject.studied_hours.into(),
-                subject.max_study_hours.into()
-            ),
-            format!("{}/{}h", subject.studied_hours, subject.max_study_hours)
+            "{0: <name_width$} | {1: <progress_width$} | {2: <hours_width$}",
+            subject.name, progress_bar, hours_text
         );
     }
 }
