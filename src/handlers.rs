@@ -31,24 +31,27 @@ pub fn study_subject(name: String) -> Result<(), AppError> {
     Ok(())
 }
 
-pub fn view_study_cycle(all: bool) {
+pub fn view_study_cycle(all: bool) -> Result<(), AppError> {
     let db = read_json_database_file();
 
-    if db.subjects.len() == 0 {
-        println!("no subjects found");
-        return;
+    if db.subjects.is_empty() {
+        println!("No subjects were found.");
+        return Ok(());
     }
 
-    match all {
-        true => utils::display_table_with_progress_bar(db.subjects),
-        false => utils::display_table_with_progress_bar(
-            db.subjects
-                .iter()
-                .map(|s| s.clone())
-                .filter(|s| s.studied_hours < s.max_study_hours)
-                .collect(),
-        ),
+    if all {
+        utils::display_table_with_progress_bar(db.subjects);
+    } else {
+        let filtered_subjects: Vec<Subject> = db
+            .subjects
+            .iter()
+            .filter(|s| s.studied_hours < s.max_study_hours)
+            .cloned()
+            .collect();
+        utils::display_table_with_progress_bar(filtered_subjects);
     }
+
+    Ok(())
 }
 
 pub fn reset_cycle() {
