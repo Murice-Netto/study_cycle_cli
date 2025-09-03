@@ -4,39 +4,24 @@ pub fn get_biggest_string_len(strings: &[&str]) -> usize {
     strings.iter().map(|s| s.len()).max().unwrap_or(0)
 }
 
-pub fn display_table(subjects: Vec<Subject>) {
-    let subject_names: Vec<String> = subjects.iter().map(|s| s.name.clone()).collect();
-    let headers: Vec<String> = vec![
-        "NAME".to_owned(),
-        "STUDIED HOURS".to_owned(),
-        "MAX STUDY HOURS".to_owned(),
-    ];
-    let biggest_cell = get_biggest_string_len(subject_names);
-    let biggest_header = get_biggest_string_len(headers);
-    if biggest_cell > biggest_header {
+pub fn display_table(subjects: &[Subject]) {
+    let name_col_len = subjects
+        .iter()
+        .map(|s| s.name.len())
+        .max()
+        .unwrap_or(0)
+        .max("NAME".len());
+    let studied_col_len = "STUDIED HOURS".len();
+    let max_col_len = "STUDIED HOURS".len();
+    println!(
+        "{0: <name_col_len$} | {1: <studied_col_len$} | {2: <max_col_len$}",
+        "NAME", "STUDIED HOURS", "MAX STUDY HOURS"
+    );
+    for subject in subjects {
         println!(
-            "{0: <biggest_cell$} | {1: <biggest_cell$} | {2: <biggest_cell$}",
-            "NAME", "STUDIED HOURS", "MAX STUDY HOURS"
+            "{0: <name_col_len$} | {1: <studied_col_len$} | {2: <max_col_len$}",
+            subject.name, subject.studied_hours, subject.max_study_hours
         );
-        for subject in subjects {
-            println!(
-                "{0: <biggest_cell$} | {1: <biggest_cell$} | {2: <biggest_cell$}",
-                subject.name, subject.studied_hours, subject.max_study_hours
-            );
-        }
-    } else {
-        println!(
-            "{0: <biggest_header$} | {1: <biggest_header$} | {2: <biggest_header$}",
-            "NAME", "STUDIED HOURS", "MAX STUDY HOURS"
-        );
-        for subject in subjects {
-            println!(
-                "{0: <biggest_header$} | {1: <biggest_header$} | {2: <biggest_header$}",
-                subject.name,
-                format!("{}h", subject.studied_hours),
-                format!("{}h", subject.max_study_hours),
-            );
-        }
     }
 }
 
