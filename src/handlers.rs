@@ -86,12 +86,13 @@ pub fn reset_cycle() -> Result<(), AppError> {
     Ok(())
 }
 
-pub fn seed_database(path: String) {
+pub fn seed_database(path: String) -> Result<(), AppError> {
     model::create_database_file_if_not_exists();
 
-    let content = fs::read_to_string(path).expect("failed to get file data to seed database");
-
-    let db: StudyCycle = serde_json::from_str(&content).expect("failed to parse seed content");
+    let content = fs::read_to_string(path)?;
+    let db: StudyCycle = serde_json::from_str(&content)?;
 
     udpate_json_database(db);
+
+    Ok(())
 }
