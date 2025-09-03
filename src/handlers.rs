@@ -1,12 +1,12 @@
 use std::fs;
 
 use crate::error::AppError;
-use crate::model::{self, read_json_database_file, udpate_json_database};
+use crate::model::{read_json_database_file, udpate_json_database};
 use crate::study_cycle::{StudyCycle, Subject};
 use crate::utils;
 
 pub fn study_subject(name: String) -> Result<(), AppError> {
-    let mut db = read_json_database_file();
+    let mut db = read_json_database_file()?;
 
     if let Some(subject) = db.subjects.iter_mut().find(|s| s.name == name) {
         if subject.studied_hours >= subject.max_study_hours {
@@ -18,7 +18,7 @@ pub fn study_subject(name: String) -> Result<(), AppError> {
 
         subject.studied_hours += 1;
 
-        udpate_json_database(db);
+        udpate_json_database(&db);
 
         println!("Studied!");
     } else {
@@ -32,7 +32,7 @@ pub fn study_subject(name: String) -> Result<(), AppError> {
 }
 
 pub fn view_study_cycle(all: bool) -> Result<(), AppError> {
-    let db = read_json_database_file();
+    let db = read_json_database_file()?;
 
     if db.subjects.is_empty() {
         println!("No subjects were found.");
@@ -55,7 +55,7 @@ pub fn view_study_cycle(all: bool) -> Result<(), AppError> {
 }
 
 pub fn reset_cycle() -> Result<(), AppError> {
-    let mut db = read_json_database_file();
+    let mut db = read_json_database_file()?;
 
     let still_need_study: Vec<&Subject> = db
         .subjects
@@ -81,18 +81,16 @@ pub fn reset_cycle() -> Result<(), AppError> {
 
     println!("Cycle reseted!");
 
-    udpate_json_database(db);
+    udpate_json_database(&db);
 
     Ok(())
 }
 
 pub fn seed_database(path: String) -> Result<(), AppError> {
-    model::create_database_file_if_not_exists();
-
     let content = fs::read_to_string(path)?;
     let db: StudyCycle = serde_json::from_str(&content)?;
 
-    udpate_json_database(db);
+    udpate_json_database(&db);
 
     Ok(())
 }
