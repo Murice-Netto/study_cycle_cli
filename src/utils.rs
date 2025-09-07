@@ -1,5 +1,3 @@
-use std::fmt::format;
-
 use crate::study_cycle::Subject;
 
 pub fn get_biggest_string_len(strings: &[&str]) -> usize {
