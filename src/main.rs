@@ -6,6 +6,7 @@ mod commands;
 mod error;
 mod handlers;
 mod model;
+mod storage;
 mod study_cycle;
 mod utils;
 
