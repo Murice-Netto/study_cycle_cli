@@ -6,10 +6,9 @@ pub struct StudyCycle {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct Subject {
     pub name: String,
-    #[serde(rename = "maxStudyHours")]
     pub max_study_hours: u8,
-    #[serde(rename = "studiedHours")]
     pub studied_hours: u8,
 }

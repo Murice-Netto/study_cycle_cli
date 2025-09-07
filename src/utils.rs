@@ -12,7 +12,7 @@ pub fn display_table(subjects: &[Subject]) {
         .unwrap_or(0)
         .max("NAME".len());
     let studied_col_len = "STUDIED HOURS".len();
-    let max_col_len = "STUDIED HOURS".len();
+    let max_col_len = "MAX STUDY HOURS".len();
     println!(
         "{0: <name_col_len$} | {1: <studied_col_len$} | {2: <max_col_len$}",
         "NAME", "STUDIED HOURS", "MAX STUDY HOURS"
