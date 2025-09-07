@@ -3,6 +3,7 @@ use clap::Parser;
 use crate::commands::Commands;
 
 mod commands;
+mod error;
 mod handlers;
 mod model;
 mod study_cycle;

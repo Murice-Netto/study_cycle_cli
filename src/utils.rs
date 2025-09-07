@@ -25,9 +25,9 @@ pub fn display_table(subjects: &[Subject]) {
     }
 }
 
-pub fn display_table_with_progress_bar(subjects: Vec<Subject>) {
+pub fn display_table_with_progress_bar(subjects: &[Subject]) {
     if subjects.is_empty() {
-        println!("No subjects to show.");
+        println!("No subjects were found.");
         return;
     }
     let name_width = subjects
@@ -69,8 +69,8 @@ pub fn get_study_hours_progress_bar(studied_hours: u8, max_study_hours: u8) -> S
     let full_part: String = std::iter::repeat(FULL)
         .take(studied_hours as usize)
         .collect();
-    let empty_part: String = std::iter::repeat(EMPTY)
+    let empty_parts: String = std::iter::repeat(EMPTY)
         .take((max_study_hours - studied_hours) as usize)
         .collect();
-    format!("{}{}", full_part, empty_part)
+    format!("{}{}", full_part, empty_parts)
 }
