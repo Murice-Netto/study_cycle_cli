@@ -40,7 +40,7 @@ pub fn view_study_cycle(all: bool) -> Result<(), AppError> {
     }
 
     if all {
-        utils::display_table_with_progress_bar(db.subjects);
+        utils::display_table_with_progress_bar(&db.subjects);
     } else {
         let filtered_subjects: Vec<Subject> = db
             .subjects
@@ -48,7 +48,7 @@ pub fn view_study_cycle(all: bool) -> Result<(), AppError> {
             .filter(|s| s.studied_hours < s.max_study_hours)
             .cloned()
             .collect();
-        utils::display_table_with_progress_bar(filtered_subjects);
+        utils::display_table_with_progress_bar(&filtered_subjects);
     }
 
     Ok(())
