@@ -21,8 +21,9 @@ struct Cli {
 fn main() -> Result<(), AppError> {
     let cli = Cli::parse();
 
-    let storage: Box<dyn storage::Storage> =
-        Box::new(storage::json_storage::JsonStorage::new("./database.json"));
+    let storage: Box<dyn storage::Storage> = Box::new(storage::json_storage::JsonStorage::new(
+        utils::get_json_database_path()?,
+    ));
     let handler: Box<dyn handlers::Handler> = Box::new(handlers::v1::V1Handler::new(storage));
 
     match &cli.command {

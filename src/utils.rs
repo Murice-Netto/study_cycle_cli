@@ -1,4 +1,8 @@
-use crate::study_cycle::Subject;
+use std::fs::{self, File};
+use std::path::{Path, PathBuf};
+
+use crate::error::AppError;
+use crate::study_cycle::{StudyCycle, Subject};
 
 pub fn get_biggest_string_len(strings: &[&str]) -> usize {
     strings.iter().map(|s| s.len()).max().unwrap_or(0)
@@ -22,6 +26,70 @@ pub fn display_table(subjects: &[Subject]) {
             "{0: <name_col_len$} | {1: <studied_col_len$} | {2: <max_col_len$}",
             subject.name, subject.studied_hours, subject.max_study_hours
         );
+    }
+}
+
+pub fn get_json_database_path() -> Result<PathBuf, AppError> {
+    const APP_FOLDER: &str = "StudyCycleCLI";
+    const FILE_NAME: &str = "database.json";
+    if let Some(home_dir) = dirs::home_dir() {
+        match std::env::consts::OS {
+            "windows" => {
+                let database_path = Path::new(&home_dir)
+                    .join("AppData")
+                    .join("Local")
+                    .join(APP_FOLDER);
+                let database_file_path = database_path.join(FILE_NAME);
+                if !database_path.exists() {
+                    fs::create_dir(&database_path)?;
+                    let starter_db = StudyCycle {
+                        subjects: vec![Subject {
+                            name: "teste".to_string(),
+                            studied_hours: 0,
+                            max_study_hours: 10,
+                        }],
+                    };
+                    let content = serde_json::to_string_pretty::<StudyCycle>(&starter_db)?;
+                    File::options()
+                        .read(true)
+                        .write(true)
+                        .create_new(true)
+                        .open(&database_file_path)?;
+                    fs::write(&database_file_path, content)?;
+                }
+                Ok(database_file_path)
+            }
+            "linux" | "macos" => {
+                let database_path = Path::new(&home_dir).join(".config").join(APP_FOLDER);
+                let database_file_path = database_path.join(FILE_NAME);
+                if !database_path.exists() {
+                    fs::create_dir(&database_path)?;
+                    let starter_db = StudyCycle {
+                        subjects: vec![Subject {
+                            name: "teste".to_string(),
+                            studied_hours: 0,
+                            max_study_hours: 10,
+                        }],
+                    };
+                    let content = serde_json::to_string_pretty::<StudyCycle>(&starter_db)?;
+                    File::options()
+                        .read(true)
+                        .write(true)
+                        .create_new(true)
+                        .open(&database_file_path)?;
+                    fs::write(&database_file_path, content)?;
+                }
+                Ok(database_file_path)
+            }
+            _ => Err(AppError::Logic(format!(
+                "{:?} OS is not supported.",
+                home_dir
+            ))),
+        }
+    } else {
+        Err(AppError::Logic(
+            "Failed to get user's home folder.".to_string(),
+        ))
     }
 }
 
