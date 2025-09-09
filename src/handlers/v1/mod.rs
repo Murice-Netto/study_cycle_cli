@@ -1,6 +1,7 @@
 use crate::error::AppError;
 use crate::handlers::Handler;
 use crate::storage::Storage;
+use crate::study_cycle::Subject;
 
 pub struct V1Handler {
     storage: Box<dyn Storage>,
@@ -31,5 +32,31 @@ impl Handler for V1Handler {
                 name
             )))
         }
+    }
+
+    fn reset_cycle(&self) -> Result<(), AppError> {
+        let mut db = self.storage.read_cycle()?;
+        let uncompleted_subjects: Vec<&Subject> = db
+            .subjects
+            .iter()
+            .filter(|s| s.studied_hours != s.max_study_hours)
+            .collect();
+        let still_need_to_study = !uncompleted_subjects.is_empty();
+        if still_need_to_study {
+            let mut error_message =
+                "Failed to restart cycle. The following subjects need to be finished:".to_string();
+            for subject in uncompleted_subjects {
+                error_message.push_str(&format!(
+                    "\n - {}({}/{}h)",
+                    subject.name, subject.studied_hours, subject.max_study_hours
+                ));
+            }
+            return Err(AppError::Logic(error_message));
+        }
+        for subject in db.subjects.iter_mut() {
+            subject.studied_hours = 0;
+        }
+        self.storage.write_cycle(&db)?;
+        Ok(())
     }
 }
