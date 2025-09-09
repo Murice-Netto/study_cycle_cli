@@ -2,6 +2,7 @@ use crate::error::AppError;
 use crate::handlers::Handler;
 use crate::storage::Storage;
 use crate::study_cycle::Subject;
+use crate::utils;
 
 pub struct V1Handler {
     storage: Box<dyn Storage>,
@@ -58,5 +59,26 @@ impl Handler for V1Handler {
         }
         self.storage.write_cycle(&db)?;
         Ok(())
+    }
+
+    fn show_cycle(&self, all: bool) -> Result<(), AppError> {
+        let db = self.storage.read_cycle()?;
+        if db.subjects.is_empty() {
+            println!("No subjects found.");
+            return Ok(());
+        }
+        if all {
+            utils::display_table_with_progress_bar(&db.subjects);
+            return Ok(());
+        } else {
+            let filtered_subjects: Vec<Subject> = db
+                .subjects
+                .iter()
+                .filter(|s| s.studied_hours < s.max_study_hours)
+                .cloned()
+                .collect();
+            utils::display_table_with_progress_bar(&filtered_subjects);
+            return Ok(());
+        }
     }
 }
