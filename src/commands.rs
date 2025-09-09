@@ -1,5 +1,6 @@
 use clap::{Args, Subcommand};
 
+// Commands
 #[derive(Subcommand, Debug)]
 pub enum Commands {
     #[command(alias = "s")]
@@ -12,6 +13,7 @@ pub enum Commands {
     Reset,
 }
 
+// Args
 #[derive(Args, Debug)]
 pub struct ViewArgs {
     #[arg(short, long)]
