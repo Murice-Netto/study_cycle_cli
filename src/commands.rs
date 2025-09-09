@@ -10,9 +10,6 @@ pub enum Commands {
 
     #[command(alias = "r")]
     Reset,
-
-    #[command(name = "seed")]
-    SeedDatabase(SeedDatabaseArgs),
 }
 
 #[derive(Args, Debug)]
@@ -25,10 +22,4 @@ pub struct ViewArgs {
 pub struct SutdyArgs {
     #[arg()]
     pub name: String,
-}
-
-#[derive(Args, Debug)]
-pub struct SeedDatabaseArgs {
-    #[arg()]
-    pub path: String,
 }
